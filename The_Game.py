@@ -19,13 +19,15 @@ car_heigth = 108
 display_width = 800
 display_height = 600
 
+pause = True
+
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption("a bit racey")
 clock = pygame.time.Clock()
 
 carımg = pygame.image.load("car.png")
 baricadeımg = pygame.image.load("baricade.png")
-#backgroundımg = pygame.image.load("background.png")
+backgroundımg = pygame.image.load("background.png")
 
 def things(thingx, thingy, thingw, thingh, color):
     baricade(thingx,thingy)
@@ -43,6 +45,8 @@ def button(msg,x,y,w,h,ia,a,action=None):
                 elif action == "quit":
                     pygame.quit()
                     qiut()
+                elif action == "unpause":
+                    unpaus()
                 
     else:
         pygame.draw.rect(gameDisplay, ia, (x,y,w,h))
@@ -67,7 +71,7 @@ def game_intro():
                 quit()
         gameDisplay.fill(white)
         largeText = pygame.font.Font("freesansbold.ttf",115)   
-        TextSurf, TextRect = text_objects("A bit racey", largeText)
+        TextSurf, TextRect = text_objects2("A bit racey", largeText)
         TextRect.center = ((display_width/2), (display_height/3))
         gameDisplay.blit(TextSurf, TextRect)
         
@@ -78,9 +82,35 @@ def game_intro():
 
         pygame.display.update()
 
+
+def unpaus():
+    global pause
+    pause = False
+
+
+
+def paused():
+    while pause:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        gameDisplay.fill(white)
+        largeText = pygame.font.Font("freesansbold.ttf",115)   
+        TextSurf, TextRect = text_objects("Paused", largeText)
+        TextRect.center = ((display_width/2), (display_height/3))
+        gameDisplay.blit(TextSurf, TextRect)
+        
+
+        #button(msg,x,y,w,h,ia,a)
+        button("Continu",150, 450, 100, 50 ,dark_green, green, "unpause")
+        button("QUİT",500, 450, 100, 50 ,dark_red, red, "quit")
+
+        pygame.display.update()
+
     
-"""def background():
-    gameDisplay.blit(backgroundımg, (0,0))"""
+def background():
+    gameDisplay.blit(backgroundımg, (0,0))
 
 
 def car(x,y):
@@ -119,6 +149,7 @@ def crash():
 
 
 def game_loop():
+    global pause
     x = (display_width * 0.41)
     y = (display_height * 0.73)
 
@@ -152,6 +183,9 @@ def game_loop():
                     thing_speed_change = 0.2
                 elif event.key == pygame.K_DOWN:
                     thing_speed_change = -0.2
+                elif event.key == pygame.K_p:
+                    pause = True
+                    paused()
 
             
             if event.type == pygame.KEYUP:
@@ -162,6 +196,7 @@ def game_loop():
         x += x_change
         #thing_speed += thing_speed_change
         gameDisplay.fill(grey)
+        #gameDisplay.blit(backgroundımg, (0,0))
         #background()
         pygame.draw.rect(gameDisplay, green, [0, 0, 150, display_height])
         pygame.draw.rect(gameDisplay, green, [650, 0, 150, display_height])
@@ -194,7 +229,7 @@ def game_loop():
              if x > thing_startx and x < thing_startx + thing_width or x + car_widht > thing_startx and x + car_widht < thing_startx + thing_width :
                 crash()
         
-
+        
         pygame.display.update()
         clock.tick(60)
 
