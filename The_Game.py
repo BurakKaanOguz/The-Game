@@ -4,6 +4,7 @@ import random
 
 pygame.init()
 
+
 black = (0,0,0)
 white = (255,255,255)
 red = (255,0,0)
@@ -27,10 +28,13 @@ gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption("The Race Game")
 clock = pygame.time.Clock()
 
-carımg = pygame.image.load("car.png")
-car_brokenımg = pygame.image.load("car_crush.png")
-baricadeımg = pygame.image.load("baricade.png")
-backgroundımg = pygame.image.load("background.png")
+crash_sound = pygame.mixer.Sound("C:\\Users\\ADSL\\Desktop\\Burak\\game\\The_Game\\sounds\\crash1.wav")
+pygame.mixer.music.load("C:\\Users\\ADSL\\Desktop\\Burak\\game\\The_Game\\sounds\\main.wav")
+
+carımg = pygame.image.load("C:\\Users\\ADSL\\Desktop\\Burak\\game\\The_Game\\ımages\\car.png")
+car_brokenımg = pygame.image.load("C:\\Users\\ADSL\\Desktop\\Burak\\game\\The_Game\\ımages\\car_crush.png")
+baricadeımg = pygame.image.load("C:\\Users\\ADSL\\Desktop\\Burak\\game\\The_Game\\ımages\\baricade.png")
+backgroundımg = pygame.image.load("C:\\Users\\ADSL\\Desktop\\Burak\\game\\The_Game\\ımages\\background.png")
 
 def things(thingx, thingy):
     baricade(thingx,thingy)
@@ -152,7 +156,11 @@ def message_display(text):
     game_loop()
 
 
-def crash(x,y,y2):
+def crash(x,y,x2,y2):
+   
+    pygame.mixer.music.stop()
+    pygame.mixer.Sound.play(crash_sound)
+   
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -161,8 +169,9 @@ def crash(x,y,y2):
         gameDisplay.fill(grey)
         pygame.draw.rect(gameDisplay, road_green, [0, 0, 150, display_height])
         pygame.draw.rect(gameDisplay, road_green, [650, 0, 150, display_height])
-        things(x,y2)
+        things(x2,y2)
         #y2 = y - thing height
+        #x2 = 
 
         car(x,y ,car_brokenımg)
         largeText = pygame.font.Font("freesansbold.ttf",100)   
@@ -211,6 +220,7 @@ def crash2(x,y,):
 
 def game_loop():
     global pause
+    pygame.mixer.music.play(-1)
     x = (display_width * 0.45)
     y = (display_height * 0.80)
 
@@ -225,6 +235,8 @@ def game_loop():
     thing_height = 39
     thing_startx = random.randrange(150, display_width - 150 - thing_width ) 
     y2 = y - thing_height
+    
+    
     dodged = 0
 
     gameExit = False
@@ -290,7 +302,7 @@ def game_loop():
         if y < thing_starty+thing_height and y > thing_starty:
 
             if x > thing_startx and x < thing_startx + thing_width or x + car_widht > thing_startx and x + car_widht < thing_startx + thing_width :
-                crash(x,y,y2)
+                crash(x,y,x - 20,y2)
         
         
         pygame.display.update()
