@@ -12,6 +12,8 @@ blue = (0,0,255)
 grey = (209,209,224)
 dark_green = (0,200,0)
 dark_red = (200,0,0)
+dark_blue = (0,0,200)
+road_green = (2,136,12)
 
 car_widht = 48
 car_heigth = 108
@@ -19,17 +21,18 @@ car_heigth = 108
 display_width = 800
 display_height = 600
 
-pause = True
+pause = False
 
 gameDisplay = pygame.display.set_mode((display_width,display_height))
-pygame.display.set_caption("a bit racey")
+pygame.display.set_caption("The Race Game")
 clock = pygame.time.Clock()
 
 carımg = pygame.image.load("car.png")
+car_brokenımg = pygame.image.load("car_crush.png")
 baricadeımg = pygame.image.load("baricade.png")
 backgroundımg = pygame.image.load("background.png")
 
-def things(thingx, thingy, thingw, thingh, color):
+def things(thingx, thingy):
     baricade(thingx,thingy)
     #pygame.draw.rect(gameDisplay, color, [thingx ,thingy, thingw, thingh])
 
@@ -40,22 +43,8 @@ def button(msg,x,y,w,h,ia,a,action=None):
     if x + 100 > mouse[0] > x and y + 50 > mouse[1] > y:
             pygame.draw.rect(gameDisplay, a, (x,y,w,h))
             if click[0] == 1 and action != None:
-                if action == "play":
-                    game_loop()
-                elif action == "quit":
-                    pygame.quit()
-                    qiut()
-                elif action == "unpause":
-                    unpaus()
-                    #crash_loop(x,y,thing_starty, thing_startx, thing_speed, thing_width,thing_height, display_width, display_height, car_heigth,car_widht, dodged)
-                    """if thing_starty > display_height:
-                        thing_starty = 0 - thing_height
-                        thing_startx = random.randrange(150, display_width - 150 - thing_width ) 
-                        dodged += 1
-                        thing_speed += 0.2"""
-                elif action == "pause":
-                    pause = True
-                    paused()
+                action()
+                 
                 
     else:
         pygame.draw.rect(gameDisplay, ia, (x,y,w,h))
@@ -81,6 +70,10 @@ def reply_write():
     text = font.render("r = reply", True, black)
     gameDisplay.blit(text, (0,50))
 
+def game_quit():
+    pygame.quit()
+    quit()
+
 def game_intro():
     intro = True
     while intro:
@@ -89,41 +82,42 @@ def game_intro():
                 pygame.quit()
                 quit()
         gameDisplay.fill(white)
-        largeText = pygame.font.Font("freesansbold.ttf",115)   
-        TextSurf, TextRect = text_objects2("A bit racey", largeText)
+        largeText = pygame.font.Font("freesansbold.ttf",100)   
+        TextSurf, TextRect = text_objects2("The Race Game", largeText)
         TextRect.center = ((display_width/2), (display_height/3))
         gameDisplay.blit(TextSurf, TextRect)
         
 
         #button(msg,x,y,w,h,ia,a)
-        button("GO",150, 450, 100, 50 ,dark_green, green, "play")
-        button("QUİT",500, 450, 100, 50 ,dark_red, red, "quit")
+        button("GO",150, 450, 100, 50 ,dark_green, green, game_loop)
+        button("QUİT",500, 450, 100, 50 ,dark_red, red, game_quit)
 
         pygame.display.update()
 
 
-def unpaus():
+def unpause():
     global pause
     pause = False
 
 
 
 def paused():
+    global pause    
     while pause:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
         gameDisplay.fill(white)
-        largeText = pygame.font.Font("freesansbold.ttf",115)   
+        largeText = pygame.font.Font("freesansbold.ttf",100)   
         TextSurf, TextRect = text_objects("Paused", largeText)
         TextRect.center = ((display_width/2), (display_height/3))
         gameDisplay.blit(TextSurf, TextRect)
         
 
         #button(msg,x,y,w,h,ia,a)
-        button("Continue",150, 450, 100, 50 ,dark_green, green, "unpause")
-        button("QUİT",500, 450, 100, 50 ,dark_red, red, "quit")
+        button("Continue",150, 450, 100, 50 ,dark_green, green, unpause)
+        button("QUİT",500, 450, 100, 50 ,dark_red, red, game_quit)
 
         pygame.display.update()
 
@@ -132,8 +126,8 @@ def background():
     gameDisplay.blit(backgroundımg, (0,0))
 
 
-def car(x,y):
-    gameDisplay.blit(carımg, (x,y))
+def car(x,y,ımg):
+    gameDisplay.blit(ımg, (x,y))
 
 
 def baricade(x,y):
@@ -149,7 +143,7 @@ def text_objects2(text, font):
 
 
 def message_display(text):
-    largeText = pygame.font.Font("freesansbold.ttf",115)   
+    largeText = pygame.font.Font("freesansbold.ttf",100)   
     TextSurf, TextRect = text_objects(text, largeText)
     TextRect.center = ((display_width/2), (display_height/2))
     gameDisplay.blit(TextSurf, TextRect)
@@ -158,50 +152,67 @@ def message_display(text):
     game_loop()
 
 
-def crash():
-    while pause:
+def crash(x,y,y2):
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-        gameDisplay.fill(white)
-        largeText = pygame.font.Font("freesansbold.ttf",115)   
+                game_quit()
+        
+        gameDisplay.fill(grey)
+        pygame.draw.rect(gameDisplay, road_green, [0, 0, 150, display_height])
+        pygame.draw.rect(gameDisplay, road_green, [650, 0, 150, display_height])
+        things(x,y2)
+        #y2 = y - thing height
+
+        car(x,y ,car_brokenımg)
+        largeText = pygame.font.Font("freesansbold.ttf",100)   
         TextSurf, TextRect = text_objects("Your dead", largeText)
         TextRect.center = ((display_width/2), (display_height/3))
         gameDisplay.blit(TextSurf, TextRect)
         
 
         #button(msg,x,y,w,h,ia,a)
-        button("Play again",150, 450, 100, 50 ,dark_green, green, "play")
+        button("Play again",200, 450, 100, 50 ,dark_green, green, game_loop)
 
-        button("QUİT",500, 450, 100, 50 ,dark_red, red, "quit")
+        button("QUİT",500, 450, 100, 50 ,dark_red, red, game_quit)
 
 
         pygame.display.update()
 
-def crash_loop(x,y,thing_starty, thing_startx, thing_speed, thing_width,thing_height, display_width, display_height, car_heigth, car_widht, dodged):
-    if x > display_width - 150 - car_widht and x < display_width or x > 0 and x < display_width - 650  :
-            crash()
-
-    if thing_starty > display_height:
-        thing_starty = 0 - thing_height
-        thing_startx = random.randrange(150, display_width - 150 - thing_width ) 
-        dodged += 1
-        thing_speed += 0.2
-            #thing_width += (dodged * 0.5)
-            #thing_height += (dodged * 0.5)
+def crash2(x,y,):
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game_quit()
         
-    if y < thing_starty+thing_height and y > thing_starty:
+        gameDisplay.fill(grey)
+        pygame.draw.rect(gameDisplay, road_green, [0, 0, 150, display_height])
+        pygame.draw.rect(gameDisplay, road_green, [650, 0, 150, display_height])
+        
+        #y2 = y - thing height
 
-        if x > thing_startx and x < thing_startx + thing_width or x + car_widht > thing_startx and x + car_widht < thing_startx + thing_width :
-            crash()
+        car(x,y ,car_brokenımg)
+        largeText = pygame.font.Font("freesansbold.ttf",100)   
+        TextSurf, TextRect = text_objects("Your dead", largeText)
+        TextRect.center = ((display_width/2), (display_height/3))
+        gameDisplay.blit(TextSurf, TextRect)
+        
+
+        #button(msg,x,y,w,h,ia,a)
+        button("Play again",200, 450, 100, 50 ,dark_green, green, game_loop)
+
+        button("QUİT",500, 450, 100, 50 ,dark_red, red, game_quit)
+
+
+        pygame.display.update()
+
 
 
 
 def game_loop():
     global pause
-    x = (display_width * 0.41)
-    y = (display_height * 0.73)
+    x = (display_width * 0.45)
+    y = (display_height * 0.80)
 
     x_change = 0
     y_change = 0
@@ -213,7 +224,7 @@ def game_loop():
     thing_width = 88
     thing_height = 39
     thing_startx = random.randrange(150, display_width - 150 - thing_width ) 
-
+    y2 = y - thing_height
     dodged = 0
 
     gameExit = False
@@ -221,8 +232,7 @@ def game_loop():
     while not gameExit:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+                game_quit()
             
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
@@ -251,33 +261,36 @@ def game_loop():
         gameDisplay.fill(grey)
         #gameDisplay.blit(backgroundımg, (0,0))
         #background()
-        pygame.draw.rect(gameDisplay, green, [0, 0, 150, display_height])
-        pygame.draw.rect(gameDisplay, green, [650, 0, 150, display_height])
+        pygame.draw.rect(gameDisplay, road_green, [0, 0, 150, display_height])
+        pygame.draw.rect(gameDisplay, road_green, [650, 0, 150, display_height])
         pause_write()
         reply_write()
-        button ("| |",740, 10, 50, 50, blue, blue, "pause")
 
 #things(thingx, thingy, thingw, thingh, color)
 
-        things(thing_startx, thing_starty, thing_width, thing_height, green)
+        things(thing_startx, thing_starty)
         thing_starty += thing_speed
         if thing_speed >= 60:
             thing_speed = 60
         elif thing_speed <= 0:
             thing_speed = 0
         
-        car(x,y)
+        car(x,y, carımg)
         thing_dodged(dodged)
         
         if x > display_width - 150 - car_widht and x < display_width or x > 0 and x < display_width - 650  :
-            crash()
+            crash2(x,y)
 
-        crash_loop(x,y,thing_starty, thing_startx, thing_speed, thing_width, thing_height, display_width, display_height, car_heigth, car_widht, dodged)
         if thing_starty > display_height:
             thing_starty = 0 - thing_height
             thing_startx = random.randrange(150, display_width - 150 - thing_width ) 
             dodged += 1
             thing_speed += 0.2
+
+        if y < thing_starty+thing_height and y > thing_starty:
+
+            if x > thing_startx and x < thing_startx + thing_width or x + car_widht > thing_startx and x + car_widht < thing_startx + thing_width :
+                crash(x,y,y2)
         
         
         pygame.display.update()
@@ -285,5 +298,4 @@ def game_loop():
 
 game_intro()
 game_loop()
-pygame.quit()
-quit()
+game_quit()
