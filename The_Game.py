@@ -28,13 +28,13 @@ gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption("The Race Game")
 clock = pygame.time.Clock()
 
-crash_sound = pygame.mixer.Sound("C:\\Users\\ADSL\\Desktop\\Burak\\game\\The_Game\\sounds\\crash1.wav")
-pygame.mixer.music.load("C:\\Users\\ADSL\\Desktop\\Burak\\game\\The_Game\\sounds\\main.wav")
+crash_sound = pygame.mixer.Sound("sounds\\crash1.wav")
+pygame.mixer.music.load("sounds\\main.wav")
 
-carımg = pygame.image.load("C:\\Users\\ADSL\\Desktop\\Burak\\game\\The_Game\\ımages\\car.png")
-car_brokenımg = pygame.image.load("C:\\Users\\ADSL\\Desktop\\Burak\\game\\The_Game\\ımages\\car_crush.png")
-baricadeımg = pygame.image.load("C:\\Users\\ADSL\\Desktop\\Burak\\game\\The_Game\\ımages\\baricade.png")
-backgroundımg = pygame.image.load("C:\\Users\\ADSL\\Desktop\\Burak\\game\\The_Game\\ımages\\background.png")
+carımg = pygame.image.load("ımages\\car.png")
+car_brokenımg = pygame.image.load("ımages\\car_crush.png")
+baricadeımg = pygame.image.load("ımages\\baricade.png")
+backgroundımg = pygame.image.load("ımages\\background.png")
 
 def things(thingx, thingy):
     baricade(thingx,thingy)
